@@ -32,6 +32,8 @@ target_include_directories(aoc_lib PUBLIC src)
 set(aoc_day_sources
   src/2024/day_01_1.c
   src/2024/day_01_2.c
+  src/2024/day_02_1.c
+  src/2024/day_02_2.c
 )
 
 foreach(day_source ${aoc_day_sources})
