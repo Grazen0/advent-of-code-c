@@ -1,0 +1,19 @@
+#ifndef AOC_LIB_MACROS_H
+#define AOC_LIB_MACROS_H
+
+#include <stdio.h>
+#include <stdlib.h>
+
+#define PANIC(...)                                              \
+    do {                                                        \
+        fprintf(stderr, "PANIC (%s:%d)\n", __FILE__, __LINE__); \
+        __VA_OPT__(fprintf(stderr, __VA_ARGS__);)               \
+        __VA_OPT__(fprintf(stderr, "\n");)                      \
+        exit(1);                                                \
+    } while (0)
+
+#define BREAK_EOF(expr) \
+    if ((expr) == EOF)  \
+        break;
+
+#endif

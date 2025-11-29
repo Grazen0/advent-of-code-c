@@ -1,0 +1,7 @@
+.cache/
+.direnv/
+build/
+/result
+Testing/
+.local/
+vgcore.*
