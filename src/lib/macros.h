@@ -12,6 +12,13 @@
         exit(1);                                                \
     } while (0)
 
+#define PANIC_IF(cond, ...)     \
+    do {                        \
+        if (cond) {             \
+            PANIC(__VA_ARGS__); \
+        }                       \
+    } while (0)
+
 #define BREAK_EOF(expr) \
     if ((expr) == EOF)  \
         break;

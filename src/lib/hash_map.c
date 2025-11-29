@@ -8,6 +8,15 @@
 static const float MAX_FILL_FACTOR = 0.75F;
 static const size_t INITIAL_BUCKETS = 8;
 
+struct HashMapNode {
+    int key;
+    int value;
+    size_t hash;
+    HashMapNode *next;
+};
+
+typedef HashMapNode Node;
+
 static inline size_t get_hash_code(const int key)
 {
     return key;
@@ -23,18 +32,18 @@ static inline void rehash(HashMap *const map)
     const size_t new_buckets_size =
         map->buckets_size == 0 ? INITIAL_BUCKETS : 2 * map->buckets_size;
 
-    HashMapNode **const new_buckets =
-        (HashMapNode **)calloc(new_buckets_size, sizeof(*new_buckets));
+    Node **const new_buckets =
+        (Node **)calloc(new_buckets_size, sizeof(*new_buckets));
 
     size_t new_used_buckets = 0;
 
     for (size_t i = 0; i < map->buckets_size; ++i) {
-        HashMapNode *cur = map->buckets[i];
+        Node *cur = map->buckets[i];
 
         while (cur != NULL) {
             const size_t new_idx = cur->hash % new_buckets_size;
 
-            HashMapNode *const next = cur->next;
+            Node *const next = cur->next;
             cur->next = new_buckets[new_idx];
 
             if (cur->next == NULL)
@@ -65,10 +74,10 @@ HashMap hmap_new(void)
 void hmap_destroy(HashMap *const map)
 {
     for (size_t i = 0; i < map->buckets_size; ++i) {
-        HashMapNode *cur = map->buckets[i];
+        Node *cur = map->buckets[i];
 
         while (cur != NULL) {
-            HashMapNode *const next = cur->next;
+            Node *const next = cur->next;
             free(cur);
             cur = next;
         }
@@ -85,7 +94,7 @@ bool hmap_contains_key(const HashMap *const map, const int key)
     const size_t hash = get_hash_code(key);
     const size_t idx = hash % map->buckets_size;
 
-    HashMapNode *cur = map->buckets[idx];
+    Node *cur = map->buckets[idx];
 
     while (cur != NULL) {
         if (cur->key == key)
@@ -99,13 +108,12 @@ bool hmap_contains_key(const HashMap *const map, const int key)
 
 int hmap_get(HashMap *const map, const int key)
 {
-    if (map->buckets_size == 0)
-        PANIC("key %i not found", key);
+    PANIC_IF(map->buckets_size == 0, "key %i not found", key);
 
     const size_t hash = get_hash_code(key);
     const size_t idx = hash % map->buckets_size;
 
-    HashMapNode *cur = map->buckets[idx];
+    Node *cur = map->buckets[idx];
 
     while (cur != NULL) {
         if (cur->key == key)
@@ -125,7 +133,7 @@ int hmap_get_or(HashMap *const map, const int key, const int default_value)
     const size_t hash = get_hash_code(key);
     const size_t idx = hash % map->buckets_size;
 
-    HashMapNode *cur = map->buckets[idx];
+    Node *cur = map->buckets[idx];
 
     while (cur != NULL) {
         if (cur->key == key)
@@ -145,7 +153,7 @@ bool hmap_insert(HashMap *const map, const int key, const int value)
     const size_t hash = get_hash_code(key);
     const size_t idx = hash % map->buckets_size;
 
-    HashMapNode **cur = &map->buckets[idx];
+    Node **cur = &map->buckets[idx];
 
     while (*cur != NULL && (*cur)->key != key)
         cur = &(*cur)->next;
@@ -158,7 +166,7 @@ bool hmap_insert(HashMap *const map, const int key, const int value)
     if (map->buckets[idx] == NULL)
         ++map->used_buckets;
 
-    const HashMapNode new_node = {
+    const Node new_node = {
         .key = key,
         .value = value,
         .hash = hash,
@@ -177,7 +185,7 @@ bool hmap_remove(HashMap *const map, const int key)
     const size_t hash = get_hash_code(key);
     const size_t idx = hash % map->buckets_size;
 
-    HashMapNode **cur = &map->buckets[idx];
+    Node **cur = &map->buckets[idx];
 
     while (*cur != NULL && (*cur)->key != key)
         cur = &(*cur)->next;
@@ -185,7 +193,7 @@ bool hmap_remove(HashMap *const map, const int key)
     if (*cur == NULL)
         return false;
 
-    HashMapNode *const next = (*cur)->next;
+    Node *const next = (*cur)->next;
     free(*cur);
     *cur = next;
 

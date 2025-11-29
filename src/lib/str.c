@@ -11,8 +11,7 @@ static void String_reallocate(String *const str, const size_t new_capacity)
     char *const new_data =
         realloc(str->data, (new_capacity + 1) * sizeof(*new_data));
 
-    if (new_data == NULL)
-        PANIC("Could not reallocate string");
+    PANIC_IF(new_data == NULL, "Could not reallocate string");
 
     str->data = new_data;
     str->capacity = new_capacity;

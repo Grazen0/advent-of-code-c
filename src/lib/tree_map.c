@@ -14,7 +14,7 @@ struct TreeMapNode {
     int key;
     int value;
     Color color;
-    ptrdiff_t height;
+    ssize_t height;
     TreeMapNode *parent;
     TreeMapNode *left;
     TreeMapNode *right;
@@ -40,7 +40,7 @@ static inline Color color(const Node *const node)
     return node->color;
 }
 
-static inline ptrdiff_t height(const Node *const node)
+static inline ssize_t height(const Node *const node)
 {
     if (node == NULL)
         return -1;
@@ -50,8 +50,7 @@ static inline ptrdiff_t height(const Node *const node)
 
 static inline Node *sibling(Node *const node)
 {
-    if (node->parent == NULL)
-        PANIC("node does not have parent");
+    PANIC_IF(node->parent == NULL, "node does not have parent");
 
     Node *const parent = node->parent;
     return node == parent->left ? parent->right : parent->left;
@@ -70,8 +69,8 @@ static inline Node **holder(TreeMap *const map, Node *const node)
 
 static inline void update_height(Node *const node)
 {
-    const ptrdiff_t l = height(node->left);
-    const ptrdiff_t r = height(node->right);
+    const ssize_t l = height(node->left);
+    const ssize_t r = height(node->right);
     node->height = 1 + (l > r ? l : r);
 }
 
@@ -280,4 +279,9 @@ bool tmap_insert(TreeMap *const map, const int key, const int value)
     rebalance_from(map, *cur);
     update_heights_upward(parent);
     return true;
+}
+
+bool tmap_remove(TreeMap *const map, const int key)
+{
+    // TODO: implement
 }

@@ -6,13 +6,6 @@
 
 typedef struct HashMapNode HashMapNode;
 
-struct HashMapNode {
-    int key;
-    int value;
-    size_t hash;
-    HashMapNode *next;
-};
-
 typedef struct {
     size_t size;
     size_t used_buckets;
