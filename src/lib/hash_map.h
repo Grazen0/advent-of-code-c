@@ -4,34 +4,34 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-typedef struct MapNode MapNode;
+typedef struct HashMapNode HashMapNode;
 
-struct MapNode {
+struct HashMapNode {
     int key;
     int value;
     size_t hash;
-    MapNode *next;
+    HashMapNode *next;
 };
 
 typedef struct {
     size_t size;
     size_t used_buckets;
-    MapNode **buckets;
+    HashMapNode **buckets;
     size_t buckets_size;
 } HashMap;
 
-HashMap map_new(void);
+HashMap hmap_new(void);
 
-void map_destroy(HashMap *map);
+void hmap_destroy(HashMap *map);
 
-bool map_contains_key(HashMap *map, int key);
+bool hmap_contains_key(const HashMap *map, int key);
 
-int map_get(HashMap *map, int key);
+int hmap_get(HashMap *map, int key);
 
-int map_get_or(HashMap *map, int key, int default_value);
+int hmap_get_or(HashMap *map, int key, int default_value);
 
-bool map_insert(HashMap *map, int key, int value);
+bool hmap_insert(HashMap *map, int key, int value);
 
-bool map_remove(HashMap *map, int key);
+bool hmap_remove(HashMap *map, int key);
 
 #endif

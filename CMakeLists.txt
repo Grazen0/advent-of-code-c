@@ -22,6 +22,7 @@ set(aoc_lib_sources
   src/lib/macros.c
   src/lib/numeric.c
   src/lib/str.c
+  src/lib/tree_map.c
   src/lib/vec.c
 )
 
