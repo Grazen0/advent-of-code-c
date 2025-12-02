@@ -24,11 +24,15 @@
         break;
 
 #define FOR_EACH_LINE_BEGIN(file, line, len, alloc_size) \
-    char *line = NULL;                                   \
-    size_t alloc_size = 0;                               \
-    ssize_t len = -1;                                    \
-    while ((len = getline(&(line), &(alloc_size), (file))) != -1)
+    do {                                                 \
+        char *line = NULL;                               \
+        size_t alloc_size = 0;                           \
+        ssize_t len = -1;                                \
+        while ((len = getline(&(line), &(alloc_size), (file))) != -1)
 
-#define FOR_EACH_LINE_END(line) free(line)
+#define FOR_EACH_LINE_END(line) \
+    free(line);                 \
+    }                           \
+    while (0)
 
 #endif
