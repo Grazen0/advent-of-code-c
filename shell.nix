@@ -4,5 +4,6 @@
 pkgs.mkShell {
   packages = with pkgs; [
     valgrind
+    gdb
   ];
 }
