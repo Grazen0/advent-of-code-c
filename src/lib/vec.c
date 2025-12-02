@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const size_t VEC_INITIAL_CAPACITY = 1;
+static const size_t VEC_INIT_CAPACITY = 1;
 
 static void vec_resize(Vec *const vec, const size_t new_capacity)
 {
@@ -67,7 +67,7 @@ void vec_destroy(Vec *const vec)
 void vec_push(Vec *const vec, const int value)
 {
     if (vec->size >= vec->capacity)
-        vec_resize(vec, (2 * vec->capacity) || VEC_INITIAL_CAPACITY);
+        vec_resize(vec, vec->capacity ? (2 * vec->capacity) : VEC_INIT_CAPACITY);
 
     ++vec->size;
     vec->data[vec->size - 1] = value;
@@ -76,7 +76,7 @@ void vec_push(Vec *const vec, const int value)
 void vec_insert(Vec *const vec, const size_t idx, const int value)
 {
     if (vec->size >= vec->capacity)
-        vec_resize(vec, (2 * vec->capacity) || VEC_INITIAL_CAPACITY);
+        vec_resize(vec, vec->capacity ? (2 * vec->capacity) : VEC_INIT_CAPACITY);
 
     ++vec->size;
 
