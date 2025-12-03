@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.11)
 project(advent-of-code LANGUAGES C VERSION 0.1.0)
 
-set(CMAKE_C_STANDARD 99)
+
+set(CMAKE_C_STANDARD 23)
+set(CMAKE_C_STANDARD_REQUIRED 23)
+set(CMAKE_C_STANDARD_EXTENSIONS OFF)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 if(MSVC)
@@ -39,6 +42,8 @@ set(aoc_day_sources
   src/2025/day_01_2.c
   src/2025/day_02_1.c
   src/2025/day_02_2.c
+  src/2025/day_03_1.c
+  src/2025/day_03_2.c
 )
 
 foreach(day_source ${aoc_day_sources})
@@ -50,4 +55,5 @@ foreach(day_source ${aoc_day_sources})
 
   add_executable(${exec_name} ${day_source})
   target_link_libraries(${exec_name} PRIVATE aoc_lib)
+  target_link_libraries(${exec_name} PRIVATE m)
 endforeach()
