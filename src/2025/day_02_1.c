@@ -5,7 +5,7 @@
 
 bool is_id_valid(long long id)
 {
-    static const size_t BUF_SIZE = 12;
+    static constexpr size_t BUF_SIZE = 12;
 
     char buf[BUF_SIZE];
     buf[BUF_SIZE - 1] = '\0';

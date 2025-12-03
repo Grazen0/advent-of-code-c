@@ -4,8 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-static const float MAX_FILL_FACTOR = 0.75F;
-static const size_t INITIAL_BUCKETS = 8;
+static constexpr float MAX_FILL_FACTOR = 0.75F;
+static constexpr size_t INITIAL_BUCKETS = 8;
 
 struct HashSetNode {
     int value;
@@ -30,8 +30,7 @@ static inline void rehash(HashSet *const set)
     const size_t new_buckets_size =
         set->buckets_size == 0 ? INITIAL_BUCKETS : 2 * set->buckets_size;
 
-    Node **const new_buckets =
-        (Node **)calloc(new_buckets_size, sizeof(*new_buckets));
+    Node **const new_buckets = (Node **)calloc(new_buckets_size, sizeof(*new_buckets));
 
     size_t new_used_buckets = 0;
 

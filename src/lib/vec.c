@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 
-static const size_t VEC_INIT_CAPACITY = 1;
+static constexpr size_t VEC_INIT_CAPACITY = 1;
 
 static void vec_resize(Vec *const vec, const size_t new_capacity)
 {
