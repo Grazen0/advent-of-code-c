@@ -1,7 +1,6 @@
 #ifndef AOC_LIB_HASH_MAP_H
 #define AOC_LIB_HASH_MAP_H
 
-#include <stdbool.h>
 #include <stddef.h>
 
 typedef struct HashMapNode HashMapNode;

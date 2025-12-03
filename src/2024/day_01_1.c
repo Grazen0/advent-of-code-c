@@ -1,6 +1,5 @@
 #include "lib/macros.h"
 #include "lib/vec.h"
-#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>

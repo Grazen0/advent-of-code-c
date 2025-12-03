@@ -1,7 +1,6 @@
 #ifndef AOC_LIB_LIB_NUMERIC_H
 #define AOC_LIB_LIB_NUMERIC_H
 
-#include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 

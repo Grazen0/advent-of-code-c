@@ -1,5 +1,4 @@
 #include "lib/hash_set.h"
-#include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>

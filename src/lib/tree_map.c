@@ -1,6 +1,5 @@
 #include "tree_map.h"
 #include "lib/macros.h"
-#include <stdbool.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
