@@ -38,13 +38,13 @@ static inline void rehash(HashMap *const map)
     for (size_t i = 0; i < map->buckets_size; ++i) {
         Node *cur = map->buckets[i];
 
-        while (cur != NULL) {
+        while (cur != nullptr) {
             const size_t new_idx = cur->hash % new_buckets_size;
 
             Node *const next = cur->next;
             cur->next = new_buckets[new_idx];
 
-            if (cur->next == NULL)
+            if (cur->next == nullptr)
                 ++new_used_buckets;
 
             new_buckets[new_idx] = cur;
@@ -64,7 +64,7 @@ HashMap hmap_new(void)
     return (HashMap){
         .size = 0,
         .used_buckets = 0,
-        .buckets = NULL,
+        .buckets = nullptr,
         .buckets_size = 0,
     };
 }
@@ -74,7 +74,7 @@ void hmap_destroy(HashMap *const map)
     for (size_t i = 0; i < map->buckets_size; ++i) {
         Node *cur = map->buckets[i];
 
-        while (cur != NULL) {
+        while (cur != nullptr) {
             Node *const next = cur->next;
             free(cur);
             cur = next;
@@ -94,7 +94,7 @@ bool hmap_contains_key(const HashMap *const map, const int key)
 
     Node *cur = map->buckets[idx];
 
-    while (cur != NULL) {
+    while (cur != nullptr) {
         if (cur->key == key)
             return true;
 
@@ -113,7 +113,7 @@ int hmap_get(HashMap *const map, const int key)
 
     Node *cur = map->buckets[idx];
 
-    while (cur != NULL) {
+    while (cur != nullptr) {
         if (cur->key == key)
             return cur->value;
 
@@ -133,7 +133,7 @@ int hmap_get_or(HashMap *const map, const int key, const int default_value)
 
     Node *cur = map->buckets[idx];
 
-    while (cur != NULL) {
+    while (cur != nullptr) {
         if (cur->key == key)
             return cur->value;
 
@@ -153,22 +153,22 @@ bool hmap_insert(HashMap *const map, const int key, const int value)
 
     Node **cur = &map->buckets[idx];
 
-    while (*cur != NULL && (*cur)->key != key)
+    while (*cur != nullptr && (*cur)->key != key)
         cur = &(*cur)->next;
 
-    if (*cur != NULL) {
+    if (*cur != nullptr) {
         (*cur)->value = value;
         return false;
     }
 
-    if (map->buckets[idx] == NULL)
+    if (map->buckets[idx] == nullptr)
         ++map->used_buckets;
 
     const Node new_node = {
         .key = key,
         .value = value,
         .hash = hash,
-        .next = NULL,
+        .next = nullptr,
     };
 
     *cur = malloc(sizeof(*map->buckets[0]));
@@ -185,17 +185,17 @@ bool hmap_remove(HashMap *const map, const int key)
 
     Node **cur = &map->buckets[idx];
 
-    while (*cur != NULL && (*cur)->key != key)
+    while (*cur != nullptr && (*cur)->key != key)
         cur = &(*cur)->next;
 
-    if (*cur == NULL)
+    if (*cur == nullptr)
         return false;
 
     Node *const next = (*cur)->next;
     free(*cur);
     *cur = next;
 
-    if (map->buckets[idx] == NULL)
+    if (map->buckets[idx] == nullptr)
         --map->used_buckets;
 
     --map->size;

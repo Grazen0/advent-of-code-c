@@ -23,7 +23,7 @@ typedef TreeMapNode Node;
 
 static inline void destroy_node(Node *const node)
 {
-    if (node == NULL)
+    if (node == nullptr)
         return;
 
     destroy_node(node->left);
@@ -33,7 +33,7 @@ static inline void destroy_node(Node *const node)
 
 static inline Color color(const Node *const node)
 {
-    if (node == NULL)
+    if (node == nullptr)
         return COLOR_BLACK;
 
     return node->color;
@@ -41,7 +41,7 @@ static inline Color color(const Node *const node)
 
 static inline ssize_t height(const Node *const node)
 {
-    if (node == NULL)
+    if (node == nullptr)
         return -1;
 
     return node->height;
@@ -49,7 +49,7 @@ static inline ssize_t height(const Node *const node)
 
 static inline Node *sibling(Node *const node)
 {
-    PANIC_IF(node->parent == NULL, "node does not have parent");
+    PANIC_IF(node->parent == nullptr, "node does not have parent");
 
     Node *const parent = node->parent;
     return node == parent->left ? parent->right : parent->left;
@@ -57,7 +57,7 @@ static inline Node *sibling(Node *const node)
 
 static inline Node **holder(TreeMap *const map, Node *const node)
 {
-    if (node->parent == NULL)
+    if (node->parent == nullptr)
         return &map->root;
 
     if (node == node->parent->left)
@@ -77,7 +77,7 @@ static inline void update_heights_upward(Node *const node)
 {
     Node *cur = node;
 
-    while (cur != NULL) {
+    while (cur != nullptr) {
         update_height(cur);
         cur = cur->parent;
     }
@@ -92,7 +92,7 @@ static void rotate_left(Node **const node)
     z->parent = x->parent;
 
     x->right = z->left;
-    if (x->right != NULL)
+    if (x->right != nullptr)
         x->right->parent = x;
 
     z->left = x;
@@ -110,7 +110,7 @@ static void rotate_right(Node **const node)
     z->parent = x->parent;
 
     x->left = z->right;
-    if (x->left != NULL)
+    if (x->left != nullptr)
         x->left->parent = x;
 
     z->right = x;
@@ -124,7 +124,7 @@ static inline void rebalance_from(TreeMap *const map, Node *const node)
     Node *cur = node;
     Node *parent = cur->parent;
 
-    while (cur->parent != NULL) { // Case 3
+    while (cur->parent != nullptr) { // Case 3
         if (color(parent) == COLOR_BLACK) {
             // Case 1
             break;
@@ -132,7 +132,7 @@ static inline void rebalance_from(TreeMap *const map, Node *const node)
 
         Node *const grandpa = parent->parent;
 
-        if (grandpa == NULL) {
+        if (grandpa == nullptr) {
             // Case 4
             parent->color = COLOR_BLACK;
             break;
@@ -180,14 +180,14 @@ TreeMap tmap_new(void)
 {
     return (TreeMap){
         .size = 0,
-        .root = NULL,
+        .root = nullptr,
     };
 }
 
 void tmap_destroy(TreeMap *const map)
 {
     destroy_node(map->root);
-    map->root = NULL;
+    map->root = nullptr;
     map->size = 0;
 }
 
@@ -195,7 +195,7 @@ bool tmap_contains_key(const TreeMap *const map, const int key)
 {
     Node *cur = map->root;
 
-    while (cur != NULL) {
+    while (cur != nullptr) {
         if (cur->key == key)
             return true;
 
@@ -212,7 +212,7 @@ int tmap_get(TreeMap *const map, const int key)
 {
     Node *cur = map->root;
 
-    while (cur != NULL) {
+    while (cur != nullptr) {
         if (cur->key == key)
             return cur->value;
 
@@ -229,7 +229,7 @@ int tmap_get_or(TreeMap *const map, const int key, const int default_value)
 {
     Node *cur = map->root;
 
-    while (cur != NULL) {
+    while (cur != nullptr) {
         if (cur->key == key)
             return cur->value;
 
@@ -244,10 +244,10 @@ int tmap_get_or(TreeMap *const map, const int key, const int default_value)
 
 bool tmap_insert(TreeMap *const map, const int key, const int value)
 {
-    Node *parent = NULL;
+    Node *parent = nullptr;
     Node **cur = &map->root;
 
-    while (*cur != NULL) {
+    while (*cur != nullptr) {
         if ((*cur)->key == key) {
             (*cur)->value = value;
             return false;
@@ -267,8 +267,8 @@ bool tmap_insert(TreeMap *const map, const int key, const int value)
         .color = COLOR_RED,
         .height = 0,
         .parent = parent,
-        .left = NULL,
-        .right = NULL,
+        .left = nullptr,
+        .right = nullptr,
     };
 
     *cur = malloc(sizeof(**cur));

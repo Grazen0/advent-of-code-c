@@ -28,7 +28,7 @@
 
 #define FOR_EACH_LINE_BEGIN(file, line, len, alloc_size) \
     do {                                                 \
-        char *line = NULL;                               \
+        char *line = nullptr;                               \
         size_t alloc_size = 0;                           \
         ssize_t len = -1;                                \
         while ((len = getline(&(line), &(alloc_size), (file))) != -1)

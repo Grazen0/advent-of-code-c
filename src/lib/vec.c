@@ -8,7 +8,7 @@ static constexpr size_t VEC_INIT_CAPACITY = 1;
 static void vec_resize(Vec *const vec, const size_t new_capacity)
 {
     int *const new_data = realloc(vec->data, new_capacity * sizeof(*new_data));
-    PANIC_IF(new_data == NULL, "could not reallocate vector");
+    PANIC_IF(new_data == nullptr, "could not reallocate vector");
 
     vec->data = new_data;
     vec->capacity = new_capacity;
@@ -17,7 +17,7 @@ static void vec_resize(Vec *const vec, const size_t new_capacity)
 Vec vec_new(void)
 {
     return (Vec){
-        .data = NULL,
+        .data = nullptr,
         .capacity = 0,
         .size = 0,
     };
@@ -29,7 +29,7 @@ Vec vec_with_capacity(const size_t initial_capacity)
         return vec_new();
 
     int *const data = malloc(initial_capacity * sizeof(*data));
-    PANIC_IF(data == NULL, "could not allocate memory");
+    PANIC_IF(data == nullptr, "could not allocate memory");
 
     return (Vec){
         .data = data,
@@ -44,7 +44,7 @@ Vec vec_filled(const size_t initial_size, const int fill_value)
         return vec_new();
 
     int *const data = malloc(initial_size * sizeof(*data));
-    PANIC_IF(data == NULL, "could not allocate memory");
+    PANIC_IF(data == nullptr, "could not allocate memory");
 
     for (size_t i = 0; i < initial_size; ++i)
         data[i] = fill_value;
@@ -59,7 +59,7 @@ Vec vec_filled(const size_t initial_size, const int fill_value)
 void vec_destroy(Vec *const vec)
 {
     free(vec->data);
-    vec->data = NULL;
+    vec->data = nullptr;
     vec->capacity = 0;
     vec->size = 0;
 }

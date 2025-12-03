@@ -11,7 +11,7 @@ static void String_reallocate(String *const str, const size_t new_capacity)
     char *const new_data =
         realloc(str->data, (new_capacity + 1) * sizeof(*new_data));
 
-    PANIC_IF(new_data == NULL, "Could not reallocate string");
+    PANIC_IF(new_data == nullptr, "Could not reallocate string");
 
     str->data = new_data;
     str->capacity = new_capacity;
@@ -36,7 +36,7 @@ String str_with_capacity(const size_t initial_capacity)
 
 String str_from(const char *const data)
 {
-    if (data == NULL)
+    if (data == nullptr)
         return str_new();
 
     const size_t size = strlen(data);
@@ -117,7 +117,7 @@ void str_clear(String *const str)
 void str_destroy(String *const str)
 {
     free(str->data);
-    str->data = NULL;
+    str->data = nullptr;
     str->capacity = 0;
     str->size = 0;
 }

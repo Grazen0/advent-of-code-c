@@ -6,7 +6,7 @@ int main(void)
 {
     int sum = 0;
 
-    char *line = NULL;
+    char *line = nullptr;
 
     while (true) {
         size_t alloc_size = 0;

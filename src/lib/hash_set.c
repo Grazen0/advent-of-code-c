@@ -36,13 +36,13 @@ static inline void rehash(HashSet *const set)
     for (size_t i = 0; i < set->buckets_size; ++i) {
         Node *cur = set->buckets[i];
 
-        while (cur != NULL) {
+        while (cur != nullptr) {
             const size_t new_idx = cur->hash % new_buckets_size;
 
             Node *const next = cur->next;
             cur->next = new_buckets[new_idx];
 
-            if (cur->next == NULL)
+            if (cur->next == nullptr)
                 ++new_used_buckets;
 
             new_buckets[new_idx] = cur;
@@ -62,7 +62,7 @@ HashSet hset_new(void)
     return (HashSet){
         .size = 0,
         .used_buckets = 0,
-        .buckets = NULL,
+        .buckets = nullptr,
         .buckets_size = 0,
     };
 }
@@ -72,7 +72,7 @@ void hset_destroy(HashSet *const set)
     for (size_t i = 0; i < set->buckets_size; ++i) {
         Node *cur = set->buckets[i];
 
-        while (cur != NULL) {
+        while (cur != nullptr) {
             Node *const next = cur->next;
             free(cur);
             cur = next;
@@ -92,7 +92,7 @@ bool hset_contains(const HashSet *const set, const int value)
 
     Node *cur = set->buckets[idx];
 
-    while (cur != NULL) {
+    while (cur != nullptr) {
         if (cur->value == value)
             return true;
 
@@ -112,19 +112,19 @@ bool hset_insert(HashSet *const set, const int value)
 
     Node **cur = &set->buckets[idx];
 
-    while (*cur != NULL && (*cur)->value != value)
+    while (*cur != nullptr && (*cur)->value != value)
         cur = &(*cur)->next;
 
-    if (*cur != NULL)
+    if (*cur != nullptr)
         return false;
 
-    if (set->buckets[idx] == NULL)
+    if (set->buckets[idx] == nullptr)
         ++set->used_buckets;
 
     const Node new_node = {
         .value = value,
         .hash = hash,
-        .next = NULL,
+        .next = nullptr,
     };
 
     *cur = malloc(sizeof(*set->buckets[0]));
@@ -141,17 +141,17 @@ bool hset_remove(HashSet *const set, const int value)
 
     Node **cur = &set->buckets[idx];
 
-    while (*cur != NULL && (*cur)->value != value)
+    while (*cur != nullptr && (*cur)->value != value)
         cur = &(*cur)->next;
 
-    if (*cur == NULL)
+    if (*cur == nullptr)
         return false;
 
     Node *const next = (*cur)->next;
     free(*cur);
     *cur = next;
 
-    if (set->buckets[idx] == NULL)
+    if (set->buckets[idx] == nullptr)
         --set->used_buckets;
 
     --set->size;
