@@ -46,6 +46,8 @@ set(aoc_day_sources
   src/2025/day_03_2.c
   src/2025/day_04_1.c
   src/2025/day_04_2.c
+  src/2025/day_05_1.c
+  src/2025/day_05_2.c
 )
 
 foreach(day_source ${aoc_day_sources})
