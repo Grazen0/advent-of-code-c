@@ -18,6 +18,8 @@ String str_with_capacity(size_t initial_capacity);
 
 String str_from(const char *data);
 
+String str_from_sized(const char *data, size_t size);
+
 void str_push(String *str, char ch);
 
 void str_push_str(String *str, String other);
@@ -25,6 +27,8 @@ void str_push_str(String *str, String other);
 void str_push_raw(String *str, const char *other);
 
 char str_pop(String *str);
+
+void str_trim_end(String *str);
 
 String str_clone(String str);
 

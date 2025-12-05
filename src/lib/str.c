@@ -6,14 +6,20 @@
 #include <stdlib.h>
 #include <string.h>
 
+static constexpr size_t STR_INITIAL_CAPACITY = 16;
+
 static void String_reallocate(String *const str, const size_t new_capacity)
 {
     char *const new_data = realloc(str->data, (new_capacity + 1) * sizeof(*new_data));
-
     PANIC_IF(new_data == nullptr, "Could not reallocate string");
 
     str->data = new_data;
     str->capacity = new_capacity;
+}
+
+static inline bool is_whitespace(const char ch)
+{
+    return ch == ' ' || ch == '\n' || ch == '\t';
 }
 
 String str_new(void)
@@ -39,6 +45,13 @@ String str_from(const char *const data)
         return str_new();
 
     const size_t size = strlen(data);
+    return str_from_sized(data, size);
+}
+
+String str_from_sized(const char *const data, const size_t size)
+{
+    if (data == nullptr)
+        return str_new();
 
     String s = {
         .data = malloc((size + 1) * sizeof(*data)),
@@ -50,10 +63,18 @@ String str_from(const char *const data)
     return s;
 }
 
+void str_destroy(String *const str)
+{
+    free(str->data);
+    str->data = nullptr;
+    str->capacity = 0;
+    str->size = 0;
+}
+
 void str_push(String *const str, const char ch)
 {
     if (str->size == str->capacity)
-        String_reallocate(str, str->capacity == 0 ? 1 : 2 * str->capacity);
+        String_reallocate(str, str->capacity ? 2 * str->capacity : STR_INITIAL_CAPACITY);
 
     str->data[str->size] = ch;
     ++str->size;
@@ -117,16 +138,19 @@ void str_clear(String *const str)
 {
     free(str->data);
 
-    str->data = malloc(1);
+    str->data = malloc(sizeof(*str->data));
     str->data[0] = '\0';
     str->size = 0;
     str->capacity = 0;
 }
 
-void str_destroy(String *const str)
+void str_trim_end(String *const str)
 {
-    free(str->data);
-    str->data = nullptr;
-    str->capacity = 0;
-    str->size = 0;
+    size_t end = str->size;
+
+    while (is_whitespace(str->data[end - 1]))
+        --end;
+
+    str->size = end;
+    str->data[str->size] = '\0';
 }

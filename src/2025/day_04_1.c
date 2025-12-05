@@ -1,4 +1,4 @@
-#include "lib/macros.h"
+#include "lib/aoc.h"
 #include "lib/str.h"
 #include "lib/vec.h"
 #include <stddef.h>
@@ -9,16 +9,7 @@ typedef Vec(String) VecString;
 int main(void)
 {
     VecString lines = vec_new();
-
-    FOR_EACH_LINE_BEGIN(stdin, line, len, alloc_size)
-    {
-        String s = str_from(line);
-        if (s.data[s.size - 1] == '\n')
-            str_pop(&s);
-
-        vec_push(&lines, &s);
-    }
-    FOR_EACH_LINE_END(line);
+    read_into_lines(stdin, &lines);
 
     const ssize_t rows = vec_size(&lines);
     const ssize_t cols = vec_first(&lines)->size;
