@@ -1,24 +1,67 @@
 #ifndef AOC_LIB_VEC_H
 #define AOC_LIB_VEC_H
 
+#include "lib/numeric.h"
 #include <stddef.h>
 
+#define Vec(type)             \
+    union {                   \
+        VecInternal internal; \
+        type *payload;        \
+    }
+
+#define vec_new() {.internal = __vec_new()}
+
+#define vec_destroy(vec) __vec_destroy(&(vec)->internal)
+
+#define vec_data_size(vec) (sizeof(*(vec)->payload))
+
+#define vec_size(vec) __vec_size(&(vec)->internal)
+
+#define vec_capacity(vec) __vec_capacity(&(vec)->internal)
+
+#define vec_data(vec) ((typeof((vec)->payload))__vec_data(&(vec)->internal))
+
+#define vec_get(vec, idx) \
+    ((typeof((vec)->payload))__vec_get(&(vec)->internal, idx, sizeof(*(vec)->payload)))
+
+#define vec_first(vec) \
+    ((typeof((vec)->payload))__vec_first(&(vec)->internal, sizeof(*(vec)->payload)))
+
+#define vec_last(vec) \
+    ((typeof((vec)->payload))__vec_last(&(vec)->internal, sizeof(*(vec)->payload)))
+
+#define vec_push(vec, value) \
+    __vec_push(&(vec)->internal, true ? value : (vec)->payload, sizeof(*(vec)->payload))
+
 typedef struct {
-    int *data;
+    u8 *data;
     size_t capacity;
     size_t size;
-} Vec;
+} VecInternal;
 
-Vec vec_new(void);
+VecInternal __vec_new(void);
 
-void vec_destroy(Vec *vec);
+void __vec_destroy(VecInternal *vec);
 
-void vec_push(Vec *vec, int value);
+size_t __vec_size(VecInternal *vec);
 
-void vec_insert(Vec *vec, size_t idx, int value);
+size_t __vec_capacity(VecInternal *vec);
 
-int vec_pop(Vec *vec);
+void *__vec_data(VecInternal *vec);
 
-int vec_remove(Vec *vec, size_t idx);
+void *__vec_get(VecInternal *vec, size_t idx, size_t item_size);
+
+void *__vec_first(VecInternal *vec, size_t item_size);
+
+void *__vec_last(VecInternal *vec, size_t item_size);
+
+void __vec_push(VecInternal *vec, const void *value, size_t item_size);
+
+void __vec_insert(VecInternal *vec, size_t idx, int value, size_t item_size);
+
+void __vec_pop(VecInternal *vec, size_t item_size);
+
+void __vec_remove(VecInternal *vec, size_t idx, size_t item_size);
 
 #endif

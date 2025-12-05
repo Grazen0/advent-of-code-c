@@ -8,8 +8,7 @@
 
 static void String_reallocate(String *const str, const size_t new_capacity)
 {
-    char *const new_data =
-        realloc(str->data, (new_capacity + 1) * sizeof(*new_data));
+    char *const new_data = realloc(str->data, (new_capacity + 1) * sizeof(*new_data));
 
     PANIC_IF(new_data == nullptr, "Could not reallocate string");
 
@@ -67,8 +66,7 @@ void str_push_str(String *const str, const String other)
         return;
 
     if (str->size + other.size >= str->capacity) {
-        const size_t new_capacity =
-            sz_max(2 * str->capacity, str->size + other.size);
+        const size_t new_capacity = sz_max(2 * str->capacity, str->size + other.size);
         String_reallocate(str, new_capacity);
     }
 
@@ -86,8 +84,7 @@ void str_push_raw(String *const str, const char *const other)
         return;
 
     if (str->size + other_size > str->capacity) {
-        const size_t new_capacity =
-            sz_max(2 * str->capacity, str->size + other_size);
+        const size_t new_capacity = sz_max(2 * str->capacity, str->size + other_size);
         String_reallocate(str, new_capacity);
     }
 
@@ -95,6 +92,18 @@ void str_push_raw(String *const str, const char *const other)
 
     str->size += other_size;
     str->data[str->size] = '\0';
+}
+
+char str_pop(String *const str)
+{
+    PANIC_IF(str->size == 0, "cannot pop an empty string");
+
+    const char ch = str->data[str->size - 1];
+
+    --str->size;
+    str->data[str->size] = '\0';
+
+    return ch;
 }
 
 String str_clone(const String str)

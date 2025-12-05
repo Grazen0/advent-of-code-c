@@ -24,6 +24,8 @@ void str_push_str(String *str, String other);
 
 void str_push_raw(String *str, const char *other);
 
+char str_pop(String *str);
+
 String str_clone(String str);
 
 void str_clear(String *str);
