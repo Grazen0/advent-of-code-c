@@ -28,8 +28,8 @@ int main(void)
         vec_push(&v2, &n);
     }
 
-    qsort(vec_data(&v1), vec_size(&v1), vec_data_size(&v1), cmp);
-    qsort(vec_data(&v2), vec_size(&v2), vec_data_size(&v2), cmp);
+    vec_qsort(&v1, cmp);
+    vec_qsort(&v2, cmp);
 
     int sum = 0;
 

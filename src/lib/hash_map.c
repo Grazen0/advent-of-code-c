@@ -1,5 +1,6 @@
 #include "lib/hash_map.h"
 #include "lib/macros.h"
+#include "lib/numeric.h"
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
@@ -8,25 +9,29 @@ static constexpr float MAX_FILL_FACTOR = 0.75F;
 static constexpr size_t INITIAL_BUCKETS = 8;
 
 struct HashMapNode {
-    int key;
-    int value;
-    size_t hash;
     HashMapNode *next;
+    size_t hash;
+    u8 key_value[];
 };
 
 typedef HashMapNode Node;
 
-static inline size_t get_hash_code(const int key)
+static inline void *node_key(HashMapNode *const node)
 {
-    return key;
+    return node->key_value;
 }
 
-static inline float fill_factor(HashMap *const map)
+static inline void *node_value(HashMapNode *const node, const size_t key_size)
+{
+    return &node->key_value[key_size];
+}
+
+static inline float fill_factor(HashMapInternal *const map)
 {
     return (float)map->used_buckets / (float)map->buckets_size;
 }
 
-static inline void rehash(HashMap *const map)
+static inline void rehash(HashMapInternal *const map)
 {
     const size_t new_buckets_size =
         map->buckets_size == 0 ? INITIAL_BUCKETS : 2 * map->buckets_size;
@@ -59,17 +64,19 @@ static inline void rehash(HashMap *const map)
     map->used_buckets = new_used_buckets;
 }
 
-HashMap hmap_new(void)
+HashMapInternal __hmap_new(EqFn eq, HashFn hash)
 {
-    return (HashMap){
+    return (HashMapInternal){
         .size = 0,
         .used_buckets = 0,
-        .buckets = nullptr,
         .buckets_size = 0,
+        .eq = eq,
+        .hash = hash,
+        .buckets = nullptr,
     };
 }
 
-void hmap_destroy(HashMap *const map)
+void __hmap_destroy(HashMapInternal *const map)
 {
     for (size_t i = 0; i < map->buckets_size; ++i) {
         Node *cur = map->buckets[i];
@@ -87,15 +94,15 @@ void hmap_destroy(HashMap *const map)
     map->used_buckets = 0;
 }
 
-bool hmap_contains_key(const HashMap *const map, const int key)
+bool __hmap_contains_key(const HashMapInternal *const map, const void *const key)
 {
-    const size_t hash = get_hash_code(key);
+    const size_t hash = map->hash(key);
     const size_t idx = hash % map->buckets_size;
 
     Node *cur = map->buckets[idx];
 
     while (cur != nullptr) {
-        if (cur->key == key)
+        if (map->eq(node_key(cur), key))
             return true;
 
         cur = cur->next;
@@ -104,38 +111,39 @@ bool hmap_contains_key(const HashMap *const map, const int key)
     return false;
 }
 
-int hmap_get(HashMap *const map, const int key)
+void *__hmap_get(HashMapInternal *const map, const void *const key, const size_t key_size)
 {
-    PANIC_IF(map->buckets_size == 0, "key %i not found", key);
+    PANIC_IF(map->buckets_size == 0, "key not found");
 
-    const size_t hash = get_hash_code(key);
+    const size_t hash = map->hash(key);
     const size_t idx = hash % map->buckets_size;
 
     Node *cur = map->buckets[idx];
 
     while (cur != nullptr) {
-        if (cur->key == key)
-            return cur->value;
+        if (map->eq(node_key(cur), key))
+            return node_value(cur, key_size);
 
         cur = cur->next;
     }
 
-    PANIC("key %i not found", key);
+    PANIC("key not found");
 }
 
-int hmap_get_or(HashMap *const map, const int key, const int default_value)
+void *__hmap_get_or(HashMapInternal *const map, const void *key, void *const default_value,
+                    const size_t key_size)
 {
     if (map->buckets_size == 0)
         return default_value;
 
-    const size_t hash = get_hash_code(key);
+    const size_t hash = map->hash(key);
     const size_t idx = hash % map->buckets_size;
 
     Node *cur = map->buckets[idx];
 
     while (cur != nullptr) {
-        if (cur->key == key)
-            return cur->value;
+        if (map->eq(node_key(cur), key))
+            return node_value(cur, key_size);
 
         cur = cur->next;
     }
@@ -143,49 +151,49 @@ int hmap_get_or(HashMap *const map, const int key, const int default_value)
     return default_value;
 }
 
-bool hmap_insert(HashMap *const map, const int key, const int value)
+bool __hmap_insert(HashMapInternal *const map, const void *const key, const void *const value,
+                   const size_t key_size, const size_t value_size)
 {
     if (map->buckets_size == 0 || fill_factor(map) > MAX_FILL_FACTOR)
         rehash(map);
 
-    const size_t hash = get_hash_code(key);
+    const size_t hash = map->hash(key);
     const size_t idx = hash % map->buckets_size;
 
     Node **cur = &map->buckets[idx];
 
-    while (*cur != nullptr && (*cur)->key != key)
+    while (*cur != nullptr && !map->eq(node_key(*cur), key))
         cur = &(*cur)->next;
 
     if (*cur != nullptr) {
-        (*cur)->value = value;
+        memcpy(node_value(*cur, key_size), value, value_size);
         return false;
     }
 
     if (map->buckets[idx] == nullptr)
         ++map->used_buckets;
 
-    const Node new_node = {
-        .key = key,
-        .value = value,
-        .hash = hash,
+    *cur = malloc(sizeof(*map->buckets[0]) + key_size + value_size);
+    **cur = (Node){
         .next = nullptr,
+        .hash = hash,
     };
 
-    *cur = malloc(sizeof(*map->buckets[0]));
-    memcpy(*cur, &new_node, sizeof(new_node));
+    memcpy(node_key(*cur), key, key_size);
+    memcpy(node_value(*cur, key_size), value, value_size);
 
     ++map->size;
     return true;
 }
 
-bool hmap_remove(HashMap *const map, const int key)
+bool __hmap_remove(HashMapInternal *const map, const void *const key)
 {
-    const size_t hash = get_hash_code(key);
+    const size_t hash = map->hash(key);
     const size_t idx = hash % map->buckets_size;
 
     Node **cur = &map->buckets[idx];
 
-    while (*cur != nullptr && (*cur)->key != key)
+    while (*cur != nullptr && !map->eq(node_key(*cur), key))
         cur = &(*cur)->next;
 
     if (*cur == nullptr)

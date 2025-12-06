@@ -5,11 +5,24 @@
 #include <stdio.h>
 
 typedef Vec(int) VecInt;
+typedef HashMap(int, int) HashMapIntInt;
+
+bool int_eq(const void *const a, const void *const b)
+{
+    return *(int *)a == *(int *)b;
+}
+
+size_t int_hash(const void *const value)
+{
+    return *(int *)value;
+}
+
+static int ZERO = 0;
 
 int main(void)
 {
     VecInt v1 = vec_new();
-    HashMap freq_map = hmap_new();
+    HashMapIntInt freq_map = hmap_new(int_eq, int_hash);
 
     int n = -1;
 
@@ -18,13 +31,19 @@ int main(void)
         vec_push(&v1, &n);
 
         BREAK_EOF(scanf("%i", &n));
-        hmap_insert(&freq_map, n, hmap_get_or(&freq_map, n, 0) + 1);
+
+        int cur_val = *hmap_get_or(&freq_map, &n, &ZERO);
+        ++cur_val;
+
+        hmap_insert(&freq_map, &n, &cur_val);
     }
 
     int sum = 0;
 
-    for (size_t i = 0; i < vec_size(&v1); ++i)
-        sum += *vec_get(&v1, i) * hmap_get_or(&freq_map, *vec_get(&v1, i), 0);
+    vec_for(&v1, x)
+    {
+        sum += *x * *hmap_get_or(&freq_map, x, &ZERO);
+    }
 
     printf("%i\n", sum);
 
