@@ -36,7 +36,16 @@
     ((typeof((vec)->payload))__vec_last(&(vec)->internal, sizeof(*(vec)->payload)))
 
 #define vec_push(vec, value) \
-    __vec_push(&(vec)->internal, true ? value : (vec)->payload, sizeof(*(vec)->payload))
+    __vec_push(&(vec)->internal, true ? (value) : (vec)->payload, sizeof(*(vec)->payload))
+
+#define vec_insert(vec, idx, value) \
+    __vec_insert(&(vec)->internal, idx, true ? (value) : (vec)->payload, sizeof(*(vec)->payload))
+
+#define vec_pop(vec, out) \
+    __vec_pop(&(vec)->internal, true ? (out) : (vec)->payload, sizeof(*(vec)->payload))
+
+#define vec_remove(vec, idx, out) \
+    __vec_remove(&(vec)->internal, idx, true ? (out) : (vec)->payload, sizeof(*(vec)->payload))
 
 #define vec_clear(vec) __vec_clear(&(vec)->internal)
 

@@ -19,12 +19,12 @@
 #define heap_is_empty(heap) __heap_is_empty(&(heap)->internal)
 
 #define heap_push(heap, value) \
-    __heap_push(&(heap)->internal, true ? value : (heap)->payload, sizeof(*(heap)->payload))
+    __heap_push(&(heap)->internal, true ? (value) : (heap)->payload, sizeof(*(heap)->payload))
 
 #define heap_top(heap) ((typeof((heap)->payload))__heap_top(&(heap)->internal))
 
 #define heap_pop(heap, out) \
-    __heap_pop(&(heap)->internal, true ? out : (heap)->payload, sizeof(*(heap)->payload))
+    __heap_pop(&(heap)->internal, true ? (out) : (heap)->payload, sizeof(*(heap)->payload))
 
 typedef bool (*CompareFn)(const void *a, const void *b);
 
