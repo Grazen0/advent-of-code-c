@@ -18,6 +18,8 @@
 
 #define vec_size(vec) __vec_size(&(vec)->internal)
 
+#define vec_is_empty(vec) __vec_is_empty(&(vec)->internal)
+
 #define vec_capacity(vec) __vec_capacity(&(vec)->internal)
 
 #define vec_data(vec) ((typeof((vec)->payload))__vec_data(&(vec)->internal))
@@ -25,8 +27,10 @@
 #define vec_get(vec, idx) \
     ((typeof((vec)->payload))__vec_get(&(vec)->internal, idx, sizeof(*(vec)->payload)))
 
-#define vec_first(vec) \
-    ((typeof((vec)->payload))__vec_first(&(vec)->internal, sizeof(*(vec)->payload)))
+#define vec_get_unchecked(vec, idx) \
+    ((typeof((vec)->payload))__vec_get_unchecked(&(vec)->internal, idx, sizeof(*(vec)->payload)))
+
+#define vec_first(vec) ((typeof((vec)->payload))__vec_first(&(vec)->internal))
 
 #define vec_last(vec) \
     ((typeof((vec)->payload))__vec_last(&(vec)->internal, sizeof(*(vec)->payload)))
@@ -52,15 +56,19 @@ VecInternal __vec_new(void);
 
 void __vec_destroy(VecInternal *vec);
 
-size_t __vec_size(VecInternal *vec);
+size_t __vec_size(const VecInternal *vec);
 
-size_t __vec_capacity(VecInternal *vec);
+bool __vec_is_empty(const VecInternal *vec);
+
+size_t __vec_capacity(const VecInternal *vec);
 
 void *__vec_data(VecInternal *vec);
 
 void *__vec_get(VecInternal *vec, size_t idx, size_t item_size);
 
-void *__vec_first(VecInternal *vec, size_t item_size);
+void *__vec_get_unchecked(VecInternal *vec, size_t idx, size_t item_size);
+
+void *__vec_first(VecInternal *vec);
 
 void *__vec_last(VecInternal *vec, size_t item_size);
 

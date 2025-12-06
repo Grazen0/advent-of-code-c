@@ -8,6 +8,13 @@ static constexpr size_t VEC_INIT_CAPACITY = 16;
 
 static void vec_resize(VecInternal *const vec, const size_t new_capacity, const size_t item_size)
 {
+    if (new_capacity == 0) {
+        free(vec->data);
+        vec->data = nullptr;
+        vec->capacity = 0;
+        return;
+    }
+
     u8 *const new_data = realloc(vec->data, new_capacity * item_size);
     PANIC_IF(new_data == nullptr, "could not reallocate vector");
 
@@ -60,12 +67,17 @@ void __vec_destroy(VecInternal *const vec)
     __vec_clear(vec);
 }
 
-size_t __vec_size(VecInternal *const vec)
+size_t __vec_size(const VecInternal *const vec)
 {
     return vec->size;
 }
 
-size_t __vec_capacity(VecInternal *const vec)
+bool __vec_is_empty(const VecInternal *const vec)
+{
+    return vec->size == 0;
+}
+
+size_t __vec_capacity(const VecInternal *const vec)
 {
     return vec->capacity;
 }
@@ -78,14 +90,17 @@ void *__vec_data(VecInternal *const vec)
 void *__vec_get(VecInternal *const vec, const size_t idx, const size_t item_size)
 {
     PANIC_IF(idx >= vec->size, "index out of bounds");
-
-    const size_t base = idx * item_size;
-    return &vec->data[base];
+    return &vec->data[idx * item_size];
 }
 
-void *__vec_first(VecInternal *const vec, const size_t item_size)
+void *__vec_get_unchecked(VecInternal *const vec, const size_t idx, const size_t item_size)
 {
-    return __vec_get(vec, 0, item_size);
+    return &vec->data[idx * item_size];
+}
+
+void *__vec_first(VecInternal *const vec)
+{
+    return &vec->data[0];
 }
 
 void *__vec_last(VecInternal *const vec, const size_t item_size)
