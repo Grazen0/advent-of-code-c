@@ -22,6 +22,7 @@ endif()
 
 set(aoc_lib_sources
   src/lib/aoc.c
+  src/lib/binary_heap.c
   src/lib/hash_map.c
   src/lib/macros.c
   src/lib/numeric.c
