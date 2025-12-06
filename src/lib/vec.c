@@ -131,9 +131,12 @@ void __vec_insert(VecInternal *const vec, const size_t idx, const int value, con
     vec->data[idx] = value;
 }
 
-void __vec_pop(VecInternal *const vec, const size_t item_size)
+void __vec_pop(VecInternal *const vec, void *const out, const size_t item_size)
 {
     PANIC_IF(vec->size == 0, "cannot pop empty vector");
+
+    if (out != nullptr)
+        memcpy(out, __vec_last(vec, item_size), item_size);
 
     --vec->size;
 

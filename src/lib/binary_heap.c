@@ -122,11 +122,8 @@ void __heap_pop(BinaryHeapInternal *const heap, void *const out, const size_t it
 {
     PANIC_IF(heap->data.size == 0, "heap is empty");
 
-    if (out != nullptr)
-        memcpy(out, __vec_first(&heap->data), item_size);
-
-    memcpy(__vec_first(&heap->data), __vec_last(&heap->data, item_size), item_size);
-    __vec_pop(&heap->data, item_size);
+    memswap(__vec_first(&heap->data), __vec_last(&heap->data, item_size), item_size);
+    __vec_pop(&heap->data, out, item_size);
     bubble_down(heap, 0, item_size);
 }
 

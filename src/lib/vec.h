@@ -76,7 +76,7 @@ void __vec_push(VecInternal *vec, const void *value, size_t item_size);
 
 void __vec_insert(VecInternal *vec, size_t idx, int value, size_t item_size);
 
-void __vec_pop(VecInternal *vec, size_t item_size);
+void __vec_pop(VecInternal *vec, void *out, size_t item_size);
 
 void __vec_remove(VecInternal *vec, size_t idx, size_t item_size);
 
