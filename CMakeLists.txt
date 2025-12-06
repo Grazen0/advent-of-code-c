@@ -13,13 +13,6 @@ else()
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-# Set default build type to Debug
-if(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE
-      Debug
-      CACHE STRING "Build type" FORCE)
-endif()
-
 set(aoc_lib_sources
   src/lib/aoc.c
   src/lib/binary_heap.c
