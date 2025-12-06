@@ -34,6 +34,12 @@
 #define vec_push(vec, value) \
     __vec_push(&(vec)->internal, true ? value : (vec)->payload, sizeof(*(vec)->payload))
 
+#define vec_for(vec, item)                                                               \
+    for (typeof((vec)->payload) item = (typeof((vec)->payload))&(vec)->internal.data[0]; \
+         item != &((typeof((vec)->payload))(vec)->internal.data)[(vec)->internal.size]; ++item)
+
+#define vec_qsort(vec, cmp) qsort(vec_data(vec), vec_size(vec), vec_data_size(vec), cmp)
+
 typedef struct {
     u8 *data;
     size_t capacity;
