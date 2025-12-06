@@ -34,6 +34,8 @@
 #define vec_push(vec, value) \
     __vec_push(&(vec)->internal, true ? value : (vec)->payload, sizeof(*(vec)->payload))
 
+#define vec_clear(vec) __vec_clear(&(vec)->internal)
+
 #define vec_for(vec, item)                                                               \
     for (typeof((vec)->payload) item = (typeof((vec)->payload))&(vec)->internal.data[0]; \
          item != &((typeof((vec)->payload))(vec)->internal.data)[(vec)->internal.size]; ++item)
@@ -69,5 +71,7 @@ void __vec_insert(VecInternal *vec, size_t idx, int value, size_t item_size);
 void __vec_pop(VecInternal *vec, size_t item_size);
 
 void __vec_remove(VecInternal *vec, size_t idx, size_t item_size);
+
+void __vec_clear(VecInternal *vec);
 
 #endif

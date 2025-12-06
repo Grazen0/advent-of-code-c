@@ -21,6 +21,7 @@ if(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
 endif()
 
 set(aoc_lib_sources
+  src/lib/aoc.c
   src/lib/hash_map.c
   src/lib/macros.c
   src/lib/numeric.c
@@ -48,6 +49,8 @@ set(aoc_day_sources
   src/2025/day_04_2.c
   src/2025/day_05_1.c
   src/2025/day_05_2.c
+  src/2025/day_06_1.c
+  src/2025/day_06_2.c
 )
 
 foreach(day_source ${aoc_day_sources})

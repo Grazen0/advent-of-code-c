@@ -57,10 +57,7 @@ VecInternal __vec_new(void)
 
 void __vec_destroy(VecInternal *const vec)
 {
-    free(vec->data);
-    vec->data = nullptr;
-    vec->capacity = 0;
-    vec->size = 0;
+    __vec_clear(vec);
 }
 
 size_t __vec_size(VecInternal *const vec)
@@ -141,4 +138,12 @@ void __vec_remove(VecInternal *const vec, const size_t idx, const size_t item_si
 
     if (vec->size <= vec->capacity / 2)
         vec_resize(vec, vec->capacity / 2, item_size);
+}
+
+void __vec_clear(VecInternal *const vec)
+{
+    free(vec->data);
+    vec->data = nullptr;
+    vec->capacity = 0;
+    vec->size = 0;
 }
