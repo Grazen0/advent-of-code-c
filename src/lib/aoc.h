@@ -2,6 +2,7 @@
 #define AOC_LIB_AOC_H
 
 #include "lib/macros.h"
+#include "lib/str.h"
 
 #define read_into_lines(file, lines)                      \
     do {                                                  \
