@@ -19,6 +19,7 @@ set(aoc_lib_sources
   src/lib/hash_map.c
   src/lib/macros.c
   src/lib/numeric.c
+  src/lib/queue.c
   src/lib/str.c
   src/lib/tree_map.c
   src/lib/vec.c
@@ -45,6 +46,8 @@ set(aoc_day_sources
   src/2025/day_05_2.c
   src/2025/day_06_1.c
   src/2025/day_06_2.c
+  src/2025/day_07_1.c
+  src/2025/day_07_2.c
 )
 
 foreach(day_source ${aoc_day_sources})
