@@ -47,6 +47,11 @@
 #define vec_remove(vec, idx, out) \
     __vec_remove(&(vec)->internal, idx, true ? (out) : (vec)->payload, sizeof(*(vec)->payload))
 
+#define vec_reserve(vec, capacity) \
+    __vec_reserve(&(vec)->internal, (capacity), sizeof(*(vec)->payload))
+
+#define vec_resize(vec, size) __vec_resize(&(vec)->internal, (size), sizeof(*(vec)->payload))
+
 #define vec_clear(vec) __vec_clear(&(vec)->internal)
 
 #define vec_for(vec, item)                                                               \
@@ -88,6 +93,10 @@ void __vec_insert(VecInternal *vec, size_t idx, int value, size_t item_size);
 void __vec_pop(VecInternal *vec, void *out, size_t item_size);
 
 void __vec_remove(VecInternal *vec, size_t idx, size_t item_size);
+
+void __vec_reserve(VecInternal *vec, size_t capacity, size_t item_size);
+
+void __vec_resize(VecInternal *vec, size_t size, size_t item_size);
 
 void __vec_clear(VecInternal *vec);
 

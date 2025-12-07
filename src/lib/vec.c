@@ -1,12 +1,18 @@
 #include "lib/vec.h"
 #include "lib/macros.h"
+#include <math.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 
 static constexpr size_t VEC_INIT_CAPACITY = 16;
 
-static void vec_resize(VecInternal *const vec, const size_t new_capacity, const size_t item_size)
+static inline size_t ceil_pow2(const size_t n)
+{
+    return powl(2, ceill(log2l(n)));
+}
+
+static void vec_realloc(VecInternal *const vec, const size_t new_capacity, const size_t item_size)
 {
     if (new_capacity == 0) {
         free(vec->data);
@@ -111,7 +117,7 @@ void *__vec_last(VecInternal *const vec, const size_t item_size)
 void __vec_push(VecInternal *const vec, const void *value, const size_t item_size)
 {
     if (vec->size >= vec->capacity)
-        vec_resize(vec, vec->capacity ? (2 * vec->capacity) : VEC_INIT_CAPACITY, item_size);
+        vec_realloc(vec, vec->capacity ? (2 * vec->capacity) : VEC_INIT_CAPACITY, item_size);
 
     const size_t base = item_size * vec->size;
     memcpy(&vec->data[base], value, item_size);
@@ -121,7 +127,7 @@ void __vec_push(VecInternal *const vec, const void *value, const size_t item_siz
 void __vec_insert(VecInternal *const vec, const size_t idx, const int value, const size_t item_size)
 {
     if (vec->size >= vec->capacity)
-        vec_resize(vec, vec->capacity ? (2 * vec->capacity) : VEC_INIT_CAPACITY, item_size);
+        vec_realloc(vec, vec->capacity ? (2 * vec->capacity) : VEC_INIT_CAPACITY, item_size);
 
     ++vec->size;
 
@@ -141,7 +147,7 @@ void __vec_pop(VecInternal *const vec, void *const out, const size_t item_size)
     --vec->size;
 
     if (vec->size <= vec->capacity / 2)
-        vec_resize(vec, vec->capacity / 2, item_size);
+        vec_realloc(vec, vec->capacity / 2, item_size);
 }
 
 void __vec_remove(VecInternal *const vec, const size_t idx, const size_t item_size)
@@ -155,7 +161,26 @@ void __vec_remove(VecInternal *const vec, const size_t idx, const size_t item_si
     --vec->size;
 
     if (vec->size <= vec->capacity / 2)
-        vec_resize(vec, vec->capacity / 2, item_size);
+        vec_realloc(vec, vec->capacity / 2, item_size);
+}
+
+void __vec_reserve(VecInternal *const vec, const size_t capacity, const size_t item_size)
+{
+    if (capacity <= vec->capacity)
+        return;
+
+    vec_realloc(vec, ceil_pow2(capacity), item_size);
+}
+
+void __vec_resize(VecInternal *const vec, const size_t size, const size_t item_size)
+{
+    if (size == 0) {
+        __vec_clear(vec);
+        return;
+    }
+
+    vec_realloc(vec, ceil_pow2(size), item_size);
+    vec->size = size;
 }
 
 void __vec_clear(VecInternal *const vec)
